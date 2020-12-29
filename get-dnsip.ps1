@@ -1,4 +1,4 @@
-get-content C:\pshell\expro\tmp.txt | foreach-object {
+get-content C:\pshell\acme\tmp.txt | foreach-object {
 
 $server = $_
 
