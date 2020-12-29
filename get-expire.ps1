@@ -1,4 +1,4 @@
-$users = get-content  c:\pshell\expro\users.txt
+$users = get-content  c:\pshell\acme\users.txt
 
 Foreach ($user in $users) 
 	{
