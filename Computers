@@ -1,0 +1,58 @@
+### Find Computers
+`Get-ADComputer -filter * -searchbase "dc=domain,dc=local"  -properties * | select name, operatingsystem, lastlogondate, operatingsystemversion | export-csv computers.csv`  
+
+`Get-ADComputer -filter * -searchbase "ou=domain controllers,dc=domain,dc=local"` 
+ 
+`Get-ADComputer -filter * -searchbase "ou=domain controllersdc=domain,dc=local" | select-object -expand name | select-string -pattern  server%`
+ 
+### List Properties of Computer
+`Get-ADComputer server% -Properties operatingSystemVersion, operatingSystem`
+
+### Restart Services
+<pre>
+$computers = Get-Content wuupdate.txt
+ForEach ($computer in $computers)
+ {
+   Restart-Service -InputObject $(Get-Service -Computer $computer -Name wuauserv);
+ }
+</pre>
+
+### Updating Registry
+`Get-Content "WUUpdate.txt" | set-regstring -Key $key -Value WUStatusserver -Data "http://server%"`
+
+`Get-Content c:\scom\wuupdate.txt | Get-RegString -Hive LocalMachine -Key Software\Policies\Microsoft\Windows\WindowsUpdate -Value WUServer -ping | Select-Object ComputerName,Value,Data`
+ 
+* HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsFirewall\StandardProfiles
+* HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\WindowsFirewall\DomainProfiles
+
+### Restart Single Service
+`restart-service -inputobject $(Get-Service -computer server01 -Name "Windows Update")`
+
+### List computers along with running service
+<pre>
+$computers = get-content "wuupdate.txt"
+ ForEach ($computer in $computers)
+{ 
+write-output $computer
+get-service -name wuauserv -ComputerName $computer
+}
+</pre>
+
+### Single Get Service
+`get-service -name wuauserv -computername aerver%`
+ 
+### Disable Service
+`Set-Service -ComputerName ADC004BBBABZGBR -name svcTimepws  -StartupType DISABLED`
+* Or 'DISABLED', 'MANUAL' or 'AUTOMATIC'
+
+### Get Command and Examples
+`Get-Command | where { $_.parameters.keys -contains "ComputerName"}`  _- commands used for remote computers_
+
+`Get-Eventlog system -computer server01,server02 -newest 10`  
+`Get-Service | export-csv | out-file services.csv`  
+`Get-Process | convertto-html | out-file test.html`  
+`Get-Service | export-clixml lab.xml`  
+`Get-Process | stop-process -whatif`  
+
+### Hotfixes
+`Get-Hotfix | select installedon, installedby, hotfixid, description | sort description | convertto-html test.
